@@ -4,7 +4,7 @@ A simple browser game. You're given a random town in England and have to guess
 which of the 92 English league clubs (Premier League + EFL, 2025-26 season)
 plays nearest to it.
 
-**Play it live:** _(URL added after deployment)_
+**Play it live:** https://rblockbush.github.io/nearest-club/
 
 ## How it works
 
