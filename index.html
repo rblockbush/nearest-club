@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nearest Club — England town football game</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="card">
+    <header>
+      <h1>⚽ Nearest Club</h1>
+      <p class="tagline">Which of the 92 English league clubs plays nearest to this town?</p>
+    </header>
+
+    <section class="town">
+      <span class="town-label">Your town</span>
+      <h2 id="town-name">—</h2>
+      <p id="town-county" class="town-county"></p>
+    </section>
+
+    <section class="guess">
+      <label for="guess-input">Pick the club you think is closest</label>
+      <input
+        id="guess-input"
+        list="club-list"
+        placeholder="Start typing a club name…"
+        autocomplete="off"
+      />
+      <datalist id="club-list"></datalist>
+      <button id="guess-btn" class="primary">Guess</button>
+    </section>
+
+    <p id="message" class="message" role="alert"></p>
+
+    <section id="result" class="result hidden"></section>
+
+    <button id="next-btn" class="secondary hidden">Next town →</button>
+
+    <section class="scoreboard">
+      <div class="stat"><span id="stat-played">0</span><label>Played</label></div>
+      <div class="stat"><span id="stat-correct">0</span><label>Correct</label></div>
+      <div class="stat"><span id="stat-accuracy">0%</span><label>Accuracy</label></div>
+      <div class="stat"><span id="stat-streak">0</span><label>Streak</label></div>
+      <div class="stat"><span id="stat-best">0</span><label>Best streak</label></div>
+    </section>
+    <button id="reset-btn" class="link">Reset score</button>
+  </main>
+
+  <footer>
+    <p>Clubs &amp; divisions for the 2025-26 season. Distances are straight-line
+       (as the crow flies) from the town to each club's stadium.</p>
+  </footer>
+
+  <script src="data/clubs.js"></script>
+  <script src="data/towns.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
