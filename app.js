@@ -218,6 +218,13 @@ function submitGuess() {
     }
     html += `<p>That's <strong>${round(guessDist - nearest.dist)} miles</strong>
       further than the closest club.</p>`;
+  } else {
+    // On a correct guess, show the next two nearest clubs.
+    html += `<p>Next nearest:</p><ol class="closest-list" start="2">`;
+    ranked.slice(1, 3).forEach((r) => {
+      html += `<li>${r.club.name} — ${round(r.dist)} mi</li>`;
+    });
+    html += `</ol>`;
   }
 
   el.result.className = "result " + (isCorrect ? "correct" : "wrong");
