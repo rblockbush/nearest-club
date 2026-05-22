@@ -1,8 +1,8 @@
-# ⚽ Nearest Club
+# Loft for Words Awaydays Game
 
-A simple browser game. You're given a random town in England and have to guess
-which of the 92 English league clubs (Premier League + EFL, 2025-26 season)
-plays nearest to it.
+A simple browser game. You're given a random town or city in England and have
+to guess which of the 92 English league clubs (Premier League + EFL, 2025-26
+season) plays nearest to it.
 
 **Play it live:** https://rblockbush.github.io/nearest-club/
 
@@ -26,6 +26,7 @@ in a browser.
 | `index.html` | Page markup |
 | `styles.css` | Styling |
 | `app.js` | Game logic (random town, distance calc, scoring) |
+| `lfw-logo.webp` | Loft for Words crest (logo / favicon) |
 | `data/clubs.js` | The 92 clubs with stadium coordinates |
 | `data/towns.js` | ~165 English towns with coordinates |
 

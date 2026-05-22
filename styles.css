@@ -1,8 +1,8 @@
 :root {
-  --pitch: #1f7a3d;
-  --pitch-dark: #14532a;
-  --ink: #11271a;
-  --accent: #f4c20d;
+  --brand: #1b4f96;       /* Loft for Words royal blue */
+  --brand-dark: #102f5e;
+  --brand-light: #2e74c9;
+  --ink: #15233d;
   --good: #1f7a3d;
   --bad: #c0392b;
   --card: #ffffff;
@@ -12,7 +12,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: linear-gradient(160deg, var(--pitch) 0%, var(--pitch-dark) 100%);
+  background: linear-gradient(160deg, var(--brand) 0%, var(--brand-dark) 100%);
   color: var(--ink);
   min-height: 100vh;
   display: flex;
@@ -31,12 +31,21 @@ body {
 }
 
 header { text-align: center; margin-bottom: 22px; }
-h1 { font-size: 1.7rem; }
-.tagline { font-size: 0.9rem; color: #5a6b60; margin-top: 6px; }
+.logo {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 14px;
+  display: block;
+  margin: 0 auto 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+h1 { font-size: 1.5rem; color: var(--brand-dark); }
+.tagline { font-size: 0.9rem; color: #5a6478; margin-top: 6px; }
 
 .town {
   text-align: center;
-  background: #f0f6f1;
+  background: #eef2f8;
   border-radius: 14px;
   padding: 18px 12px;
   margin-bottom: 20px;
@@ -45,14 +54,14 @@ h1 { font-size: 1.7rem; }
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.7rem;
-  color: #6b7d70;
+  color: #6b7689;
 }
-#town-name { font-size: 2rem; margin-top: 4px; color: var(--pitch-dark); }
-.town-county { font-size: 0.9rem; color: #6b7d70; margin-top: 6px; }
+#town-name { font-size: 2rem; margin-top: 4px; color: var(--brand-dark); }
+.town-county { font-size: 0.9rem; color: #6b7689; margin-top: 6px; }
 
 .hint-btn {
-  background: #e3e9e4;
-  color: #4a5a4e;
+  background: #dde4ef;
+  color: #45506a;
   font-size: 0.78rem;
   font-weight: 700;
   padding: 6px 12px;
@@ -72,7 +81,7 @@ h1 { font-size: 1.7rem; }
   right: 0;
   list-style: none;
   background: #fff;
-  border: 2px solid #cdd8cf;
+  border: 2px solid #c7d0e0;
   border-radius: 10px;
   max-height: 220px;
   overflow-y: auto;
@@ -86,18 +95,18 @@ h1 { font-size: 1.7rem; }
 }
 .suggestions li:hover,
 .suggestions li.active {
-  background: var(--pitch);
+  background: var(--brand);
   color: #fff;
 }
 
 input {
   font-size: 1rem;
   padding: 12px 14px;
-  border: 2px solid #cdd8cf;
+  border: 2px solid #c7d0e0;
   border-radius: 10px;
   width: 100%;
 }
-input:focus { outline: none; border-color: var(--pitch); }
+input:focus { outline: none; border-color: var(--brand); }
 
 button {
   font-size: 1rem;
@@ -111,16 +120,16 @@ button {
 button:active { transform: scale(0.98); }
 button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.primary { background: var(--pitch); color: #fff; margin-top: 4px; }
+.primary { background: var(--brand); color: #fff; margin-top: 4px; }
 .secondary {
-  background: var(--accent);
-  color: var(--ink);
+  background: var(--brand-light);
+  color: #fff;
   width: 100%;
   margin-top: 14px;
 }
 .link {
   background: none;
-  color: #8a9a8e;
+  color: #8a93a6;
   font-size: 0.8rem;
   font-weight: 600;
   padding: 8px;
@@ -140,7 +149,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   margin-top: 16px;
   padding: 16px;
   border-radius: 12px;
-  background: #f0f6f1;
+  background: #eef2f8;
   font-size: 0.95rem;
 }
 .result.correct { background: #e3f3e6; border: 2px solid var(--good); }
@@ -163,12 +172,12 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   justify-content: space-between;
   gap: 6px;
   margin-top: 22px;
-  border-top: 1px solid #e3e9e4;
+  border-top: 1px solid #e2e7f0;
   padding-top: 16px;
 }
 .stat { text-align: center; flex: 1; }
-.stat span { display: block; font-size: 1.25rem; font-weight: 800; color: var(--pitch-dark); }
-.stat label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7d70; }
+.stat span { display: block; font-size: 1.25rem; font-weight: 800; color: var(--brand-dark); }
+.stat label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7689; }
 
 .hidden { display: none; }
 
@@ -177,4 +186,4 @@ footer {
   max-width: 480px;
   text-align: center;
 }
-footer p { font-size: 0.75rem; color: rgba(255, 255, 255, 0.75); }
+footer p { font-size: 0.75rem; color: rgba(255, 255, 255, 0.8); }
