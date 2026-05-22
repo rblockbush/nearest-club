@@ -16,18 +16,25 @@
     <section class="town">
       <span class="town-label">Your town</span>
       <h2 id="town-name">—</h2>
-      <p id="town-county" class="town-county"></p>
+      <button id="hint-btn" class="hint-btn">💡 Show county hint</button>
+      <p id="town-county" class="town-county hidden"></p>
     </section>
 
     <section class="guess">
       <label for="guess-input">Pick the club you think is closest</label>
-      <input
-        id="guess-input"
-        list="club-list"
-        placeholder="Start typing a club name…"
-        autocomplete="off"
-      />
-      <datalist id="club-list"></datalist>
+      <div class="combo">
+        <input
+          id="guess-input"
+          type="text"
+          placeholder="Start typing a club name…"
+          autocomplete="off"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded="false"
+          aria-controls="suggestions"
+        />
+        <ul id="suggestions" class="suggestions hidden" role="listbox"></ul>
+      </div>
       <button id="guess-btn" class="primary">Guess</button>
     </section>
 

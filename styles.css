@@ -48,10 +48,47 @@ h1 { font-size: 1.7rem; }
   color: #6b7d70;
 }
 #town-name { font-size: 2rem; margin-top: 4px; color: var(--pitch-dark); }
-.town-county { font-size: 0.9rem; color: #6b7d70; margin-top: 2px; }
+.town-county { font-size: 0.9rem; color: #6b7d70; margin-top: 6px; }
+
+.hint-btn {
+  background: #e3e9e4;
+  color: #4a5a4e;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
 
 .guess { display: flex; flex-direction: column; gap: 8px; }
 .guess label { font-size: 0.85rem; font-weight: 600; }
+
+.combo { position: relative; }
+
+.suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  list-style: none;
+  background: #fff;
+  border: 2px solid #cdd8cf;
+  border-radius: 10px;
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
+}
+.suggestions li {
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+.suggestions li:hover,
+.suggestions li.active {
+  background: var(--pitch);
+  color: #fff;
+}
 
 input {
   font-size: 1rem;
@@ -110,6 +147,13 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .result.wrong { background: #fbe9e7; border: 2px solid var(--bad); }
 .result h3 { font-size: 1.1rem; margin-bottom: 8px; }
 .result p { margin: 4px 0; }
+.closest-list {
+  margin: 8px 0 4px 22px;
+  padding: 0;
+  font-size: 0.9rem;
+}
+.closest-list li { margin: 3px 0; }
+.closest-list li.your-pick { font-weight: 800; color: var(--bad); }
 .result .verdict { font-weight: 800; }
 .result .verdict.correct { color: var(--good); }
 .result .verdict.wrong { color: var(--bad); }

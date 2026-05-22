@@ -54,8 +54,9 @@ function ordinal(n) {
 const el = {
   townName: document.getElementById("town-name"),
   townCounty: document.getElementById("town-county"),
+  hintBtn: document.getElementById("hint-btn"),
   input: document.getElementById("guess-input"),
-  datalist: document.getElementById("club-list"),
+  suggestions: document.getElementById("suggestions"),
   guessBtn: document.getElementById("guess-btn"),
   nextBtn: document.getElementById("next-btn"),
   message: document.getElementById("message"),
@@ -78,6 +79,59 @@ function clubByName(name) {
   return CLUBS.find((c) => c.name.toLowerCase() === wanted) || null;
 }
 
+// --- Autocomplete -------------------------------------------------------
+let matches = []; // club objects currently shown as suggestions
+let activeIndex = -1; // highlighted suggestion, -1 = none
+
+function showSuggestions(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) return hideSuggestions();
+
+  matches = CLUBS.filter((c) => c.name.toLowerCase().includes(q))
+    .sort((a, b) => {
+      // names starting with the query come first, then alphabetical
+      const aStarts = a.name.toLowerCase().startsWith(q) ? 0 : 1;
+      const bStarts = b.name.toLowerCase().startsWith(q) ? 0 : 1;
+      return aStarts - bStarts || a.name.localeCompare(b.name);
+    })
+    .slice(0, 8);
+
+  if (matches.length === 0) return hideSuggestions();
+
+  activeIndex = -1;
+  el.suggestions.innerHTML = matches
+    .map((c, i) => `<li role="option" data-index="${i}">${c.name}</li>`)
+    .join("");
+  el.suggestions.classList.remove("hidden");
+  el.input.setAttribute("aria-expanded", "true");
+}
+
+function hideSuggestions() {
+  el.suggestions.classList.add("hidden");
+  el.suggestions.innerHTML = "";
+  el.input.setAttribute("aria-expanded", "false");
+  matches = [];
+  activeIndex = -1;
+}
+
+function setActive(index) {
+  activeIndex = index;
+  [...el.suggestions.children].forEach((li, i) =>
+    li.classList.toggle("active", i === activeIndex)
+  );
+  if (activeIndex >= 0) {
+    el.suggestions.children[activeIndex].scrollIntoView({ block: "nearest" });
+  }
+}
+
+function pickSuggestion(index) {
+  if (index < 0 || index >= matches.length) return;
+  el.input.value = matches[index].name;
+  hideSuggestions();
+  el.input.focus();
+}
+
+// --- Scoreboard ---------------------------------------------------------
 function renderScoreboard() {
   el.played.textContent = stats.played;
   el.correct.textContent = stats.correct;
@@ -87,12 +141,16 @@ function renderScoreboard() {
   el.best.textContent = stats.best;
 }
 
+// --- Rounds -------------------------------------------------------------
 function newRound() {
   currentTown = TOWNS[Math.floor(Math.random() * TOWNS.length)];
   roundOver = false;
 
   el.townName.textContent = currentTown.name;
-  el.townCounty.textContent = currentTown.county;
+  el.townCounty.textContent = "";
+  el.townCounty.classList.add("hidden");
+  el.hintBtn.classList.remove("hidden"); // county is a hint, hidden until asked for
+
   el.input.value = "";
   el.input.disabled = false;
   el.guessBtn.disabled = false;
@@ -100,6 +158,7 @@ function newRound() {
   el.result.className = "result hidden";
   el.result.innerHTML = "";
   el.nextBtn.classList.add("hidden");
+  hideSuggestions();
   el.input.focus();
 }
 
@@ -117,6 +176,7 @@ function submitGuess() {
   const guessRank = ranked.findIndex((r) => r.club.name === guessed.name);
   const guessDist = ranked[guessRank].dist;
   const isCorrect = guessRank === 0;
+  const round = (n) => n.toFixed(1);
 
   // Update score
   stats.played += 1;
@@ -130,49 +190,97 @@ function submitGuess() {
   saveStats();
   renderScoreboard();
 
-  // Render result
-  const round = (n) => n.toFixed(1);
+  // Build result
   let html = `<h3><span class="verdict ${isCorrect ? "correct" : "wrong"}">${
     isCorrect ? "✅ Correct!" : "❌ Not quite"
   }</span></h3>`;
-  html += `<p>Nearest club to <strong>${currentTown.name}</strong> is
+  html += `<p>The nearest club to <strong>${currentTown.name}</strong> is
     <strong>${nearest.club.name}</strong> (${nearest.club.stadium}),
     about <strong>${round(nearest.dist)} miles</strong> away.</p>`;
+
   if (!isCorrect) {
-    html += `<p>Your pick, <strong>${guessed.name}</strong>, was the
-      <strong>${ordinal(guessRank + 1)} nearest</strong> —
-      about ${round(guessDist)} miles away
-      (${round(guessDist - nearest.dist)} miles further than the closest).</p>`;
+    // Show the closest clubs so the player can see what they missed.
+    const topCount = Math.min(5, Math.max(3, guessRank + 1));
+    html += `<p>Closest clubs:</p><ol class="closest-list">`;
+    ranked.slice(0, topCount).forEach((r) => {
+      const isPick = r.club.name === guessed.name;
+      html += `<li${isPick ? ' class="your-pick"' : ""}>${r.club.name} — ${round(
+        r.dist
+      )} mi${isPick ? " (your pick)" : ""}</li>`;
+    });
+    html += `</ol>`;
+
+    if (guessRank + 1 > topCount) {
+      // Pick fell outside the list above — call it out separately.
+      html += `<p>Your pick, <strong>${guessed.name}</strong>, was only the
+        <strong>${ordinal(guessRank + 1)} nearest</strong> —
+        about ${round(guessDist)} miles away.</p>`;
+    }
+    html += `<p>That's <strong>${round(guessDist - nearest.dist)} miles</strong>
+      further than the closest club.</p>`;
   }
+
   el.result.className = "result " + (isCorrect ? "correct" : "wrong");
   el.result.innerHTML = html;
 
   el.message.textContent = "";
   el.input.disabled = true;
   el.guessBtn.disabled = true;
+  hideSuggestions();
   el.nextBtn.classList.remove("hidden");
+  el.nextBtn.focus(); // Enter now starts the next round
   roundOver = true;
 }
 
 // --- Wiring -------------------------------------------------------------
 function init() {
-  // Populate the searchable dropdown (alphabetical for easy scanning).
-  [...CLUBS]
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .forEach((club) => {
-      const opt = document.createElement("option");
-      opt.value = club.name;
-      el.datalist.appendChild(opt);
-    });
-
   el.guessBtn.addEventListener("click", submitGuess);
   el.nextBtn.addEventListener("click", newRound);
 
+  el.hintBtn.addEventListener("click", () => {
+    el.townCounty.textContent = currentTown.county;
+    el.townCounty.classList.remove("hidden");
+    el.hintBtn.classList.add("hidden");
+  });
+
+  // Auto-suggest as the player types.
+  el.input.addEventListener("input", () => {
+    el.message.textContent = "";
+    showSuggestions(el.input.value);
+  });
+
   el.input.addEventListener("keydown", (e) => {
-    if (e.key !== "Enter") return;
+    const open = !el.suggestions.classList.contains("hidden");
+
+    if (e.key === "ArrowDown" && open) {
+      e.preventDefault();
+      setActive((activeIndex + 1) % matches.length);
+    } else if (e.key === "ArrowUp" && open) {
+      e.preventDefault();
+      setActive((activeIndex - 1 + matches.length) % matches.length);
+    } else if (e.key === "Escape") {
+      hideSuggestions();
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (open && activeIndex >= 0) {
+        pickSuggestion(activeIndex);
+      } else {
+        hideSuggestions();
+        submitGuess();
+      }
+    }
+  });
+
+  // mousedown (not click) so selection beats the input's blur event.
+  el.suggestions.addEventListener("mousedown", (e) => {
+    const li = e.target.closest("li");
+    if (!li) return;
     e.preventDefault();
-    if (roundOver) newRound();
-    else submitGuess();
+    pickSuggestion(Number(li.dataset.index));
+  });
+
+  el.input.addEventListener("blur", () => {
+    setTimeout(hideSuggestions, 150);
   });
 
   el.resetBtn.addEventListener("click", () => {
